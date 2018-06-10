@@ -15,6 +15,23 @@ class SiteController extends Controller
 	public function actionIndex()
 	{
 		$models = Contacts::find()->all();
+		$url = 'http://localhost/contact-app-mf/web/countries.json';
+        $content = file_get_contents($url);
+        $countryList = json_decode($content, true);
+		foreach($models as $model){
+			for($i=0; $i<sizeof($countryList); $i++){
+				if($countryList[$i]['code'] == $model->country){
+					$model->country = $countryList[$i]['name'];
+					if(isset($countryList[$i]['provinces'])){
+						$provincesList = $countryList[$i]['provinces'];
+						for($j=0; $j<sizeof($provincesList); $j++){
+							if($provincesList[$j]['code'] == $model->province)
+								$model->province = $provincesList[$j]['name'];
+						}
+					}
+				}
+			}			
+		}
 		if($models == NULL)
 			Yii::$app->session->setFlash('error', 'No contacts found.');
 		return $this->render('index', array('models' => $models));
@@ -25,10 +42,15 @@ class SiteController extends Controller
 	*/
 	public function actionAddcontact($id=NULL)
 	{		
-		if ($id == NULL)
+		$countryCode = 'US';
+		$provincesList = [];
+		if ($id == NULL){
 			$model = new Contacts;
-		else
+		}
+		else{
 			$model= Contacts::find()->where(['id' => $id])->one();
+			$countryCode = $model->country;
+		}
 		if (isset($_POST['Contacts']))
 		{			
 			$model->load($_POST);
@@ -44,7 +66,16 @@ class SiteController extends Controller
 		$url = 'http://localhost/contact-app-mf/web/countries.json';
         $content = file_get_contents($url);
         $countryList = json_decode($content, true);
-		return $this->render('addcontact', array('model' => $model,'countryList' => $countryList));
+		$defaultProvince = '[{"code":"-","name":"-"}]';
+		for($i=0; $i<sizeof($countryList); $i++){
+			if($countryList[$i]['code'] == $countryCode && isset($countryList[$i]['provinces'])){
+				$provincesList = $countryList[$i]['provinces'];
+			}
+		}	
+		if($provincesList == NULL){
+			$provincesList = json_decode($defaultProvince, true);
+		}
+		return $this->render('addcontact', array('model' => $model,'countryList' => $countryList, 'provincesList' => $provincesList));
 	}
 	
 	/*
@@ -62,24 +93,20 @@ class SiteController extends Controller
 	/*
 	Method used to get provinces for country
 	*/
-	public function actionProvinces() {
+	public function actionProvinces($id) {
 		$provincesList = [];
-		if (isset($_POST['depdrop_parents'])) {
-			$parents = $_POST['depdrop_parents'];
-			if ($parents != null) {
-				$country = $parents[0];		
-				$url = 'http://localhost/contact-app-mf/web/provinces.json';
-				$content = file_get_contents($url);
-				$countryList = json_decode($content, true);		
-				for($i=0; $i<sizeof($countryList); $i++){
-					if($countryList[$i]['id'] == $country && isset($countryList[$i]['provinces'])){
-						$provincesList = $countryList[$i]['provinces'];
-						return Json::encode(['output'=>$provincesList]);
-					}
+		$url = 'http://localhost/contact-app-mf/web/countries.json';
+		$content = file_get_contents($url);
+		$countryList = json_decode($content, true);		
+		for($i=0; $i<sizeof($countryList); $i++){
+			if($countryList[$i]['code'] == $id && isset($countryList[$i]['provinces'])){
+				$provincesList = $countryList[$i]['provinces'];
+				for($j=0; $j<sizeof($provincesList); $j++){
+					echo "<option value='".$provincesList[$j]['code']."'>".$provincesList[$j]['name']."</option>";
 				}
+				return;
 			}
 		}
-		$provincesList = [['id'=>'-', 'name'=>'-']];
-		return Json::encode(['output'=>$provincesList, 'selected'=>'-']);
+		return "<option>-<option>";
 	}
 }

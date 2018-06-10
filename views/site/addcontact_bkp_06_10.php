@@ -8,6 +8,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
 use yii\bootstrap\ActiveForm;
+use kartik\depdrop\DepDrop;
 
 $this->title = ' Add / Update Contact';
 $this->params['breadcrumbs'][] = $this->title;
@@ -19,23 +20,18 @@ $this->params['breadcrumbs'][] = $this->title;
 			<?php $form = ActiveForm::begin(['id' => 'contact-form']); ?>
 				<?= $form->field($model, 'name')->textInput(['autofocus' => true]) ?>
 				<?= $form->field($model, 'email') ?>
-				<?php  
-					$countryArray = ArrayHelper::map($countryList,'code','name');
-					$provincesArray = ArrayHelper::map($provincesList,'code','name');
-				?>
-				<?= $form->field($model, 'country')->dropDownList($countryArray, 
-					['id'=>'country',
-					'prompt' => ' -- Select Country --',
-					'onchange' => '$.post("index.php?r=site/provinces&id='.'"+$(this).val(), function(data){
-						$("select#province").html(data);
-					});'					
-					]);
-				?>
-				<?= $form->field($model, 'province')->dropDownList($provincesArray, 
-					['id'=>'province',
-					'prompt' => ' -- Select Province --',					
-					]);
-				?>
+				<?php  $countryArray = ArrayHelper::map($countryList,'code','name');
+						?>
+				<?= $form->field($model, 'country')->dropDownList($countryArray, ['id'=>'country','prompt' => ' -- Select Country --']); ?>
+				<?php 
+				echo $form->field($model, 'province')->widget(DepDrop::classname(), [
+					'options'=>['id'=>'province'],
+					'pluginOptions'=>[
+					'depends'=>['country'], // the id for cat attribute
+					'placeholder'=>'-- Select Province --',
+					'url'=>Url::to(['site/provinces'])
+					]
+				]);?>
 				<?= $form->field($model, 'subject') ?>
 				<?= $form->field($model, 'body')->textarea(['rows' => 6]) ?>
 				<div class="form-group">
