@@ -12,6 +12,7 @@ use kartik\depdrop\DepDrop;
 
 $this->title = ' Add / Update Contact';
 $this->params['breadcrumbs'][] = $this->title;
+
 ?>
 <div class="site-contact">
     <h1><?= Html::encode($this->title) ?></h1>

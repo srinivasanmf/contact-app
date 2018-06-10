@@ -37,6 +37,7 @@ class SiteController extends Controller
 		return $this->render('index', array('models' => $models));
 	}
 	
+	
 	/*
 	Method used to add / update the contacts
 	*/

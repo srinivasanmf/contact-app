@@ -30,6 +30,7 @@ $this->params['breadcrumbs'][] = $this->title;
 						$("select#province").html(data);
 					});'					
 					]);
+					
 				?>
 				<?= $form->field($model, 'province')->dropDownList($provincesArray, 
 					['id'=>'province',
