@@ -31,9 +31,9 @@ class Contacts extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-			[['name', 'email', 'subject','body'], 'required'],
+			[['name', 'email', 'subject','body','country', 'province'], 'required'],
 			[['email'], 'email'],
-            [['body'], 'string'],
+            [['body', 'country', 'province'], 'string'],
             [['created_on', 'updated_on'], 'safe'],
             [['name', 'email', 'subject'], 'string', 'max' => 255],
         ];
@@ -49,6 +49,8 @@ class Contacts extends \yii\db\ActiveRecord
             'email' => 'Email',
             'subject' => 'Subject',
             'body' => 'Body',
+			'country' => 'Country',
+			'province' => 'Province',
             'created_on' => 'Created On',
             'updated_on' => 'Updated On',
         ];

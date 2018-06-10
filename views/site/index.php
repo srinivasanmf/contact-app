@@ -15,6 +15,8 @@ $this->title = 'Contacts App';
 				<td>Name</td>
 				<td>Email</td>
 				<td>Subject</td>
+				<td>Country</td>
+				<td>State/Province</td>
 				<td>Body</td>
 				<td>Actions</td>
 			</tr>
@@ -23,6 +25,8 @@ $this->title = 'Contacts App';
 					<td><?php echo $contact->name; ?></td>
 					<td><?php echo $contact->email; ?></td>
 					<td><?php echo $contact->subject; ?></td>
+					<td><?php echo $contact->country; ?></td>
+					<td><?php echo $contact->province; ?></td>
 					<td><?php echo $contact->body; ?></td>
 					<td>
 						<?php echo Html::a('<i class="glyphicon glyphicon-edit"></i>', array('/site/addcontact', 'id'=>$contact->id)); ?>

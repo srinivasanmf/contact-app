@@ -5,6 +5,7 @@ namespace app\controllers;
 use Yii;
 use yii\web\Controller;
 use app\models\Contacts;
+use yii\helpers\Json;
 
 class SiteController extends Controller
 {	
@@ -29,7 +30,7 @@ class SiteController extends Controller
 		else
 			$model= Contacts::find()->where(['id' => $id])->one();
 		if (isset($_POST['Contacts']))
-		{
+		{			
 			$model->load($_POST);
 			if ($model->save())
 			{
@@ -40,7 +41,10 @@ class SiteController extends Controller
 			else
 				Yii::$app->session->setFlash('error', 'Contact could not be saved.');
 		}
-		return $this->render('addcontact', array('model' => $model));
+		$url = 'http://localhost/contact-app-mf/web/countries.json';
+        $content = file_get_contents($url);
+        $countryList = json_decode($content, true);
+		return $this->render('addcontact', array('model' => $model,'countryList' => $countryList));
 	}
 	
 	/*
@@ -53,5 +57,29 @@ class SiteController extends Controller
 			Yii::$app->session->setFlash('error', 'Unable to delete Contact');
 		$models = Contacts::find()->all();
 		return $this->render('index', array('models' => $models));
+	}
+	
+	/*
+	Method used to get provinces for country
+	*/
+	public function actionProvinces() {
+		$provincesList = [];
+		if (isset($_POST['depdrop_parents'])) {
+			$parents = $_POST['depdrop_parents'];
+			if ($parents != null) {
+				$country = $parents[0];		
+				$url = 'http://localhost/contact-app-mf/web/provinces.json';
+				$content = file_get_contents($url);
+				$countryList = json_decode($content, true);		
+				for($i=0; $i<sizeof($countryList); $i++){
+					if($countryList[$i]['id'] == $country && isset($countryList[$i]['provinces'])){
+						$provincesList = $countryList[$i]['provinces'];
+						return Json::encode(['output'=>$provincesList]);
+					}
+				}
+			}
+		}
+		$provincesList = [['id'=>'-', 'name'=>'-']];
+		return Json::encode(['output'=>$provincesList, 'selected'=>'-']);
 	}
 }
