@@ -2,9 +2,9 @@
 
 return [
     'class' => 'yii\db\Connection',
-    'dsn' => 'mysql:host=localhost;dbname=contact-app',
-    'username' => 'root',
-    'password' => '',
+    'dsn' => 'mysql:host=localhost;dbname=mango_test',
+    'username' => 'mango_test',
+    'password' => 'wWyS+@tXdw9ZBD=',
     'charset' => 'utf8',
 
     // Schema cache options (for production environment)

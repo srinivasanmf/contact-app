@@ -34,6 +34,8 @@ class m180607_182411_contacts extends Migration
 		'name' => 'VARCHAR(255)',
 		'email' => 'VARCHAR(255)',
 		'subject' => 'VARCHAR(255)',
+		'country' => 'VARCHAR(255)',
+		'province' => 'VARCHAR(255)',
 		'body' => 'TEXT',
 		'created_on' => 'TIMESTAMP',
 		'updated_on' => 'TIMESTAMP'
