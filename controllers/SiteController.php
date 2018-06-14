@@ -5,33 +5,15 @@ namespace app\controllers;
 use Yii;
 use yii\web\Controller;
 use app\models\Contacts;
-use yii\helpers\Json;
 
-class SiteController extends Controller
+class SiteController extends ContactsController
 {	
 	/*
 	Loads contact app index page
 	*/
 	public function actionIndex()
 	{
-		$models = Contacts::find()->all();
-		$url = 'http://localhost/contact-app-mf/web/countries.json';
-        $content = file_get_contents($url);
-        $countryList = json_decode($content, true);
-		foreach($models as $model){
-			for($i=0; $i<sizeof($countryList); $i++){
-				if($countryList[$i]['code'] == $model->country){
-					$model->country = $countryList[$i]['name'];
-					if(isset($countryList[$i]['provinces'])){
-						$provincesList = $countryList[$i]['provinces'];
-						for($j=0; $j<sizeof($provincesList); $j++){
-							if($provincesList[$j]['code'] == $model->province)
-								$model->province = $provincesList[$j]['name'];
-						}
-					}
-				}
-			}			
-		}
+		$models = ContactsController::getContacts();
 		if($models == NULL)
 			Yii::$app->session->setFlash('error', 'No contacts found.');
 		return $this->render('index', array('models' => $models));
@@ -58,13 +40,13 @@ class SiteController extends Controller
 			if ($model->save())
 			{
 				Yii::$app->session->setFlash('success', 'Contact has been saved successfully.');
-				$models = Contacts::find()->all();
+				$models = ContactsController::getContacts();
 				return $this->render('index', array('models' => $models));
 			}
 			else
 				Yii::$app->session->setFlash('error', 'Contact could not be saved.');
 		}
-		$url = 'http://localhost/contact-app-mf/web/countries.json';
+		$url = 'countries.json';
         $content = file_get_contents($url);
         $countryList = json_decode($content, true);
 		$defaultProvince = '[{"code":"-","name":"-"}]';
@@ -87,7 +69,7 @@ class SiteController extends Controller
 		$model= Contacts::find()->where(['id' => $id])->one();
 		if ($model !== NULL && !$model->delete())
 			Yii::$app->session->setFlash('error', 'Unable to delete Contact');
-		$models = Contacts::find()->all();
+		$models = ContactsController::getContacts();
 		return $this->render('index', array('models' => $models));
 	}
 	
@@ -96,7 +78,7 @@ class SiteController extends Controller
 	*/
 	public function actionProvinces($id) {
 		$provincesList = [];
-		$url = 'http://localhost/contact-app-mf/web/countries.json';
+		$url = 'countries.json';
 		$content = file_get_contents($url);
 		$countryList = json_decode($content, true);		
 		for($i=0; $i<sizeof($countryList); $i++){
