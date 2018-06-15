@@ -17,8 +17,8 @@ $this->params['breadcrumbs'][] = $this->title;
 	<div class="row">
 		<div class="col-lg-5">
 			<?php $form = ActiveForm::begin(['id' => 'contact-form']); ?>
-				<?= $form->field($model, 'name')->textInput(['autofocus' => true]) ?>
-				<?= $form->field($model, 'email') ?>
+				<?= $form->field($model, 'name')->textInput(['autofocus' => true, 'maxlength'=>100, 'placeholder' => 'Enter Name']) ?>
+				<?= $form->field($model, 'email')->textInput(['maxlength'=>100, 'placeholder' => 'Enter Email']) ?>
 				<?php  
 					$countryArray = ArrayHelper::map($countryList,'code','name');
 					$provincesArray = ArrayHelper::map($provincesList,'code','name');
@@ -37,8 +37,8 @@ $this->params['breadcrumbs'][] = $this->title;
 					'prompt' => ' -- Select Province --',					
 					]);
 				?>
-				<?= $form->field($model, 'subject') ?>
-				<?= $form->field($model, 'body')->textarea(['rows' => 6]) ?>
+				<?= $form->field($model, 'subject')->textInput(['maxlength'=>100, 'placeholder' => 'Enter Subject']) ?>
+				<?= $form->field($model, 'body')->textarea(['maxlength'=>2000, 'rows' => 6]) ?>
 				<div class="form-group">
 					<?= Html::submitButton('Submit', ['class' => 'btn btn-primary', 'name' => 'contact-button']) ?>
 					<?= Html::a(Yii::t('app', 'Cancel'), Url::toRoute(['index']), ['class' => 'btn btn-default', 'name' => 'cancel-button']) ?>

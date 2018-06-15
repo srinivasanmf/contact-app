@@ -22,12 +22,12 @@ $this->title = 'Contacts App';
 			</tr>
 			<?php foreach ($models as $contact): ?>
 				<tr>
-					<td><?php echo $contact->name; ?></td>
-					<td><?php echo $contact->email; ?></td>
-					<td><?php echo $contact->subject; ?></td>
+					<td><?php echo substr($contact->name, 0, 30); ?></td>
+					<td><?php echo substr($contact->email, 0, 30); ?></td>
+					<td><?php echo substr($contact->subject, 0, 30); ?></td>
 					<td><?php echo $contact->country; ?></td>
 					<td><?php echo $contact->province; ?></td>
-					<td><?php echo $contact->body; ?></td>
+					<td><?php echo substr($contact->body, 0, 30); ?></td>
 					<td>
 						<?php echo Html::a('<i class="glyphicon glyphicon-edit"></i>', array('/site/addcontact', 'id'=>$contact->id)); ?>
 						<?php echo Html::a('<i class="glyphicon glyphicon-trash"></i>', array('site/delete', 'id'=>$contact->id)); ?>
